@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package authzed.v1;
+
+option go_package = "authzed-go/authze/pb";
+
+service AuthzedSVC {
+
+  //添加权限
+  rpc AddPerm(AddPermRequest)returns(AddPermResponse){};
+  //更新权限
+  rpc UpdatePerm(updatePermRequest)returns(UpdatePermResponse){};
+  //删除权限
+  rpc DelPerm(DelPermRequest)returns(DelPermResponse){};
+  //读schema
+  rpc ReadSchema(ReadSchemaRequest)returns(ReadSchemaResponse){};
+  //写schema
+  rpc WriteSchema(WriteSchemaRequest)returns(WriteSchemaResponse){};
+
+
+}
+message AddPermRequest{}
+message AddPermResponse{}
+message updatePermRequest{}
+message UpdatePermResponse{}
+message DelPermRequest{}
+message DelPermResponse{}
+message ReadSchemaRequest{}
+message ReadSchemaResponse{
+  string schema=1;
+}
+message WriteSchemaRequest{
+  string schema=1;
+}
+message WriteSchemaResponse{}
