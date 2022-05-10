@@ -19,7 +19,7 @@ name: authzed-go
 on:
   push:
     branches: 
-      - mian
+      - main
 
 jobs:
   buildAndPush:
