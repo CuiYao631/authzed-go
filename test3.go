@@ -10,7 +10,7 @@ import (
 	"log"
 )
 
-func main() {
+func main3() {
 	client, err := authzed.NewClient(
 		"localhost:50051",
 		grpcutil.WithInsecureBearerToken("somerandomkeyhere"),

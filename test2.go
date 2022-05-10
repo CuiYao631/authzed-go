@@ -11,7 +11,7 @@ import (
 	"github.com/authzed/grpcutil"
 )
 
-func main() {
+func main2() {
 	client, err := authzed.NewClient(
 		"localhost:50051",
 		grpcutil.WithInsecureBearerToken("somerandomkeyhere"),
