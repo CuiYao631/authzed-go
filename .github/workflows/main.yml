@@ -1,0 +1,82 @@
+# This workflow will build and push a new container image to Alibaba Cloud Container Registry (ACR),
+# and then will deploy it to Alibaba Cloud Container Service for Kubernetes (ACK), when there is a push to the main branch.
+#
+# To use this workflow, you will need to complete the following set-up steps:
+#
+# 1. Create an ACR repository to store your container images. 
+#    You can use ACR EE instance for more security and better performance.
+#    For instructions see https://www.alibabacloud.com/help/doc-detail/142168.htm
+#
+# 2. Create an ACK cluster to run your containerized application.
+#    You can use ACK Pro cluster for more security and better performance.
+#    For instructions see https://www.alibabacloud.com/help/doc-detail/95108.htm
+#
+# 3. Store your AccessKey pair in GitHub Actions secrets named `ACCESS_KEY_ID` and `ACCESS_KEY_SECRET`.
+#    For instructions on setting up secrets see: https://developer.github.com/actions/managing-workflows/stor
+
+name: authzed-go
+
+on:
+  push:
+    branches: 
+      - mian
+
+jobs:
+  buildAndPush:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.x
+      - name: Setup env
+        shell: bash
+        run: |
+          echo "GOPATH=$(dirname $GITHUB_WORKSPACE)" >> $GITHUB_ENV
+          echo "$(dirname $GITHUB_WORKSPACE)/bin" >> $GITHUB_PATH
+      - uses: actions/checkout@v2
+        with:
+          ref: 'dev'
+      - name: Echo go env
+        run: |
+          go env
+      - name: Set go env
+        shell: bash
+        run: |
+          go env -w CGO_ENABLED=0
+      - name: Run go get
+        run: |
+          git config --global url."https://${{ secrets.GIT_PERSONAL_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          go get -v ./...
+      - name: Build go binary
+        run: |
+          go build -v -a -o release/main
+      - name: set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+      - name: set up docker buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          version: latest
+      - name: login to ali registry
+        uses: docker/login-action@v1
+        with:
+          registry: registry.cn-hangzhou.aliyuncs.com
+          username: ${{secrets.ALI_REGISTRY_USERNAME}}
+          password: ${{secrets.ALI_REGISTRY_PASSWORD}}
+      - name: Build and push docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: registry.cn-hangzhou.aliyuncs.com/xiaocui_server/authzed-go:main
+
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{job.status}}
+          channel: '#portal'
+        if: always()
