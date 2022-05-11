@@ -64,9 +64,10 @@ func (u usecase) ReadSchema(ctx context.Context) (string, error) {
 	req := &pb.ReadSchemaRequest{}
 	resp, err := u.client.ReadSchema(context.Background(), req)
 	if err != nil {
-		return "", status.Error(codes.InvalidArgument, "failed to write schema"+err.Error())
+		return "", status.Error(codes.InvalidArgument, "failed to Read schema"+err.Error())
 		//log.Fatalf("failed to write schema: %s", err)
 	}
+	log.Println("ReadSchema")
 	//log.Println(resp.SchemaText)
 	return resp.SchemaText, nil
 
@@ -78,6 +79,7 @@ func (u usecase) WriteScheme(ctx context.Context, scheme string) error {
 		return status.Error(codes.InvalidArgument, "failed to write schema"+er.Error())
 		//log.Fatalf("failed to write schema: %s", err)
 	}
+	log.Println("WriteScheme")
 	log.Println(res)
 	return nil
 }
