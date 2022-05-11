@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
+	"os"
 )
 
 const schema = `
@@ -48,7 +49,7 @@ const (
 
 func main() {
 	client, err := authzed.NewClient(
-		"localhost:50051",
+		os.Getenv("HOST"),
 		// NOTE: For SpiceDB behind TLS, use:
 		// grpcutil.WithBearerToken("somerandomkeyhere"),
 		// grpcutil.WithSystemCerts(grpcutil.VerifyCA),

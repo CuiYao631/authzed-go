@@ -42,7 +42,6 @@ spec:
       port: 9090
       protocol: "TCP"
       targetPort: 9090
-
 ---
 apiVersion: "apps/v1"
 kind: "Deployment"
@@ -78,7 +77,6 @@ spec:
           image: "quay.io/authzed/spicedb:latest"
           imagePullPolicy: "Always"
           command: ["spicedb", "serve"]
-
           env:
             # These flags are used to enable TLS for the gRPC and HTTP ports:
             #
@@ -107,13 +105,13 @@ spec:
             # with cluster dispatching. For more info see:
             # https://docs.authzed.com/spicedb/selecting-a-datastore
             #
-#             - name: "SPICEDB_DATASTORE_ENGINE"
-#               value: "postgres"
-#             - name: "SPICEDB_DATASTORE_CONN_URI"
-#               valueFrom:
-#                 secretKeyRef:
-#                   name: "spicedb"
-#                   key: "SPICEDB_DATASTORE_CONN_URI"
+            # - name: "SPICEDB_DATASTORE_ENGINE"
+            #   value: "cockroachdb"
+            # - name: "SPICEDB_DATASTORE_CONN_URI"
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: "spicedb"
+            #       key: "SPICEDB_DATASTORE_CONN_URI"
             # - name: "SPICEDB_DISPATCH_CLUSTER_ENABLED"
             #   value: "true"
             # - name: "SPICEDB_DISPATCH_UPSTREAM_ADDR"
@@ -129,11 +127,6 @@ spec:
                 secretKeyRef:
                   name: "spicedb"
                   key: "SPICEDB_GRPC_PRESHARED_KEY"
-            - name: "SPICEDB_DATASTORE_ENGINE"
-              value: "postgres"
-            - name: "SPICEDB_DATASTORE_CONN_URI"
-              value: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
-
           ports:
             - name: "grpc"
               containerPort: 50051

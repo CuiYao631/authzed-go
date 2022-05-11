@@ -20,6 +20,9 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 8088
+          env:
+            - name: "host"
+              value: "spicedb"
 ---
 apiVersion: v1
 kind: Service
