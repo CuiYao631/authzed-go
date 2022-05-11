@@ -59,7 +59,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to initialize client: %s", err)
 	}
-
+	log.Println(os.Getenv("HOST"))
 	s := grpc.NewServer()
 
 	auth := authze.NewAuthzed(client)

@@ -21,8 +21,8 @@ spec:
           ports:
             - containerPort: 8088
           env:
-            - name: "host"
-              value: "spicedb"
+            - name: HOST
+              value: spicedb:50051
 ---
 apiVersion: v1
 kind: Service
