@@ -16,24 +16,25 @@ spec:
     spec:
       containers:
         - name: authzed
-          image: authzed
-          imagePullPolicy: Never # 使用本地镜像
+          image: registry.cn-hangzhou.aliyuncs.com/xiaocui_server/authzed-go:main
+          imagePullPolicy: Never
           ports:
             - containerPort: 8088
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: authzed-go
+  name: authzed-go-svc
   labels:
-    app: authzed-go
+    app: authzed-go-svc
+  namespace: default
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
-    - port: 8088
-      targetPort: 8088
-      nodePort: 9192
+    - nodePort: 30000
+      port: 8080
+      targetPort: 9192
+      protocol: TCP
   selector:
     app: authzed-go
 

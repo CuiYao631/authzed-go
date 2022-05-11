@@ -59,6 +59,8 @@ func (s *server) WriteSchema(ctx context.Context, req *pb.WriteSchemaRequest) (*
 	if req.Schema == "" {
 		return nil, status.Error(codes.Aborted, "failed to write schema")
 	}
-	s.uc.WriteScheme(ctx, req.Schema)
+	if err := s.uc.WriteScheme(ctx, req.Schema); err != nil {
+		return nil, err
+	}
 	return &pb.WriteSchemaResponse{}, nil
 }

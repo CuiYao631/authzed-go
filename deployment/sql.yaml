@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authzed-postgres
+  namespace: default
+  labels:
+    name: authzed-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: authzed-postgres
+  template:
+    metadata:
+      labels:
+        name: authzed-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:12.1
+          imagePullPolicy: Never
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+          volumeMounts:
+            - name: postgres
+              mountPath: /var/lib/postgresql/12/main
+      volumes:
+        - name: postgres
+          hostPath:
+            path: /data/postgre
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authzed-postgres
+  namespace: default
+  labels:
+    name: authzed-postgres
+spec:
+  type: NodePort
+  ports:
+    - nodePort: 30811
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    name: authzed-postgres
+
