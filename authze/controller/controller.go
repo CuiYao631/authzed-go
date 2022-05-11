@@ -26,7 +26,9 @@ func NewServer(uc usecase.Usecase) Server {
 // AddPerm 添加权限
 func (s *server) AddPerm(ctx context.Context, req *pb.AddPermRequest) (*pb.AddPermResponse, error) {
 
-	return &pb.AddPermResponse{}, nil
+	return &pb.AddPermResponse{
+		Test: "OK",
+	}, nil
 }
 
 // UpdatePerm 更新权限

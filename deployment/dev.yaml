@@ -17,12 +17,12 @@ spec:
       containers:
         - name: authzed
           image: registry.cn-hangzhou.aliyuncs.com/xiaocui_server/authzed-go:main
-          imagePullPolicy: Never
+          #imagePullPolicy: Never
           ports:
             - containerPort: 8088
           env:
-            - name: HOST
-              value: spicedb:50051
+            - name: "HOST"
+              value: "spicedb:50051"
 ---
 apiVersion: v1
 kind: Service

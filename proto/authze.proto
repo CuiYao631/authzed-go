@@ -20,7 +20,9 @@ service AuthzedSVC {
 
 }
 message AddPermRequest{}
-message AddPermResponse{}
+message AddPermResponse{
+  string test=1;
+}
 message updatePermRequest{}
 message UpdatePermResponse{}
 message DelPermRequest{}
