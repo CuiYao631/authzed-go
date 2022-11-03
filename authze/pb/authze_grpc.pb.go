@@ -23,11 +23,42 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthzedSVCClient interface {
 	//添加权限
+	// object_type  : schema 中的资源类型
+	// object_id    : 资源ID
+	// subject_type : schema 中的主题类型
+	// subject_id   : 主题ID
+	// relation     : 需要设置的关系
+	// return       : 返回token (暂时不知道干啥用)
 	AddPerm(ctx context.Context, in *AddPermRequest, opts ...grpc.CallOption) (*AddPermResponse, error)
-	//更新权限
+	//更新权限 （暂时不用）
 	UpdatePerm(ctx context.Context, in *UpdatePermRequest, opts ...grpc.CallOption) (*UpdatePermResponse, error)
+	//读取权限
+	//resource_type :
+	ReadPerm(ctx context.Context, in *ReadPermRequest, opts ...grpc.CallOption) (*ReadPermResponse, error)
+	//检查权限
+	// object_type  : schema 中的资源类型
+	// object_id    : 资源ID
+	// subject_type : schema 中的主题类型
+	// subject_id   : 主题ID
+	// permission   : 权限
+	// return       : 返回检查结果
+	CheckPerm(ctx context.Context, in *CheckPermRequest, opts ...grpc.CallOption) (*CheckPermResponse, error)
 	//删除权限
 	DelPerm(ctx context.Context, in *DelPermRequest, opts ...grpc.CallOption) (*DelPermResponse, error)
+	//获取 具体 subject 拥有权限的  object 的id 列表
+	// object_type       :  schema 中的资源类型
+	// permission        :  权限
+	// subject_type      :  schema 中的主题类型
+	// subject_id        :  主题ID
+	// return            :  返回object 的id 列表
+	LookupResources(ctx context.Context, in *LookupResourcesRequest, opts ...grpc.CallOption) (*LookupResourcesResponse, error)
+	//获取拥有具体 object 的 subject 列表
+	// object_type       :  schema 中的资源类型
+	// object_id         :  资源ID
+	// permission        :  权限
+	// subject_type      :  schema 中的主题类型
+	// return            :  返回subject 的id 列表
+	LookupSubjects(ctx context.Context, in *LookupSubjectsRequest, opts ...grpc.CallOption) (*LookupSubjectsResponse, error)
 	//读schema
 	ReadSchema(ctx context.Context, in *ReadSchemaRequest, opts ...grpc.CallOption) (*ReadSchemaResponse, error)
 	//写schema
@@ -60,9 +91,45 @@ func (c *authzedSVCClient) UpdatePerm(ctx context.Context, in *UpdatePermRequest
 	return out, nil
 }
 
+func (c *authzedSVCClient) ReadPerm(ctx context.Context, in *ReadPermRequest, opts ...grpc.CallOption) (*ReadPermResponse, error) {
+	out := new(ReadPermResponse)
+	err := c.cc.Invoke(ctx, "/authzed.v1.AuthzedSVC/ReadPerm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authzedSVCClient) CheckPerm(ctx context.Context, in *CheckPermRequest, opts ...grpc.CallOption) (*CheckPermResponse, error) {
+	out := new(CheckPermResponse)
+	err := c.cc.Invoke(ctx, "/authzed.v1.AuthzedSVC/CheckPerm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authzedSVCClient) DelPerm(ctx context.Context, in *DelPermRequest, opts ...grpc.CallOption) (*DelPermResponse, error) {
 	out := new(DelPermResponse)
 	err := c.cc.Invoke(ctx, "/authzed.v1.AuthzedSVC/DelPerm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authzedSVCClient) LookupResources(ctx context.Context, in *LookupResourcesRequest, opts ...grpc.CallOption) (*LookupResourcesResponse, error) {
+	out := new(LookupResourcesResponse)
+	err := c.cc.Invoke(ctx, "/authzed.v1.AuthzedSVC/LookupResources", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authzedSVCClient) LookupSubjects(ctx context.Context, in *LookupSubjectsRequest, opts ...grpc.CallOption) (*LookupSubjectsResponse, error) {
+	out := new(LookupSubjectsResponse)
+	err := c.cc.Invoke(ctx, "/authzed.v1.AuthzedSVC/LookupSubjects", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -92,11 +159,42 @@ func (c *authzedSVCClient) WriteSchema(ctx context.Context, in *WriteSchemaReque
 // for forward compatibility
 type AuthzedSVCServer interface {
 	//添加权限
+	// object_type  : schema 中的资源类型
+	// object_id    : 资源ID
+	// subject_type : schema 中的主题类型
+	// subject_id   : 主题ID
+	// relation     : 需要设置的关系
+	// return       : 返回token (暂时不知道干啥用)
 	AddPerm(context.Context, *AddPermRequest) (*AddPermResponse, error)
-	//更新权限
+	//更新权限 （暂时不用）
 	UpdatePerm(context.Context, *UpdatePermRequest) (*UpdatePermResponse, error)
+	//读取权限
+	//resource_type :
+	ReadPerm(context.Context, *ReadPermRequest) (*ReadPermResponse, error)
+	//检查权限
+	// object_type  : schema 中的资源类型
+	// object_id    : 资源ID
+	// subject_type : schema 中的主题类型
+	// subject_id   : 主题ID
+	// permission   : 权限
+	// return       : 返回检查结果
+	CheckPerm(context.Context, *CheckPermRequest) (*CheckPermResponse, error)
 	//删除权限
 	DelPerm(context.Context, *DelPermRequest) (*DelPermResponse, error)
+	//获取 具体 subject 拥有权限的  object 的id 列表
+	// object_type       :  schema 中的资源类型
+	// permission        :  权限
+	// subject_type      :  schema 中的主题类型
+	// subject_id        :  主题ID
+	// return            :  返回object 的id 列表
+	LookupResources(context.Context, *LookupResourcesRequest) (*LookupResourcesResponse, error)
+	//获取拥有具体 object 的 subject 列表
+	// object_type       :  schema 中的资源类型
+	// object_id         :  资源ID
+	// permission        :  权限
+	// subject_type      :  schema 中的主题类型
+	// return            :  返回subject 的id 列表
+	LookupSubjects(context.Context, *LookupSubjectsRequest) (*LookupSubjectsResponse, error)
 	//读schema
 	ReadSchema(context.Context, *ReadSchemaRequest) (*ReadSchemaResponse, error)
 	//写schema
@@ -114,8 +212,20 @@ func (UnimplementedAuthzedSVCServer) AddPerm(context.Context, *AddPermRequest) (
 func (UnimplementedAuthzedSVCServer) UpdatePerm(context.Context, *UpdatePermRequest) (*UpdatePermResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePerm not implemented")
 }
+func (UnimplementedAuthzedSVCServer) ReadPerm(context.Context, *ReadPermRequest) (*ReadPermResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadPerm not implemented")
+}
+func (UnimplementedAuthzedSVCServer) CheckPerm(context.Context, *CheckPermRequest) (*CheckPermResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckPerm not implemented")
+}
 func (UnimplementedAuthzedSVCServer) DelPerm(context.Context, *DelPermRequest) (*DelPermResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DelPerm not implemented")
+}
+func (UnimplementedAuthzedSVCServer) LookupResources(context.Context, *LookupResourcesRequest) (*LookupResourcesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LookupResources not implemented")
+}
+func (UnimplementedAuthzedSVCServer) LookupSubjects(context.Context, *LookupSubjectsRequest) (*LookupSubjectsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LookupSubjects not implemented")
 }
 func (UnimplementedAuthzedSVCServer) ReadSchema(context.Context, *ReadSchemaRequest) (*ReadSchemaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadSchema not implemented")
@@ -172,6 +282,42 @@ func _AuthzedSVC_UpdatePerm_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthzedSVC_ReadPerm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadPermRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthzedSVCServer).ReadPerm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authzed.v1.AuthzedSVC/ReadPerm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthzedSVCServer).ReadPerm(ctx, req.(*ReadPermRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthzedSVC_CheckPerm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckPermRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthzedSVCServer).CheckPerm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authzed.v1.AuthzedSVC/CheckPerm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthzedSVCServer).CheckPerm(ctx, req.(*CheckPermRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthzedSVC_DelPerm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DelPermRequest)
 	if err := dec(in); err != nil {
@@ -186,6 +332,42 @@ func _AuthzedSVC_DelPerm_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthzedSVCServer).DelPerm(ctx, req.(*DelPermRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthzedSVC_LookupResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LookupResourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthzedSVCServer).LookupResources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authzed.v1.AuthzedSVC/LookupResources",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthzedSVCServer).LookupResources(ctx, req.(*LookupResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthzedSVC_LookupSubjects_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LookupSubjectsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthzedSVCServer).LookupSubjects(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authzed.v1.AuthzedSVC/LookupSubjects",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthzedSVCServer).LookupSubjects(ctx, req.(*LookupSubjectsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -242,8 +424,24 @@ var AuthzedSVC_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthzedSVC_UpdatePerm_Handler,
 		},
 		{
+			MethodName: "ReadPerm",
+			Handler:    _AuthzedSVC_ReadPerm_Handler,
+		},
+		{
+			MethodName: "CheckPerm",
+			Handler:    _AuthzedSVC_CheckPerm_Handler,
+		},
+		{
 			MethodName: "DelPerm",
 			Handler:    _AuthzedSVC_DelPerm_Handler,
+		},
+		{
+			MethodName: "LookupResources",
+			Handler:    _AuthzedSVC_LookupResources_Handler,
+		},
+		{
+			MethodName: "LookupSubjects",
+			Handler:    _AuthzedSVC_LookupSubjects_Handler,
 		},
 		{
 			MethodName: "ReadSchema",

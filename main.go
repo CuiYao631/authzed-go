@@ -11,38 +11,6 @@ import (
 	"os"
 )
 
-const schema = `
-
-definition user {}
-
-definition resource {
-    relation manager: user | usergroup#member | usergroup#manager
-    relation viewer: user | usergroup#member | usergroup#manager
-
-    permission manage = manager
-    permission view = viewer + manager
-}
-
-definition usergroup {
-    relation manager: user | usergroup#member | usergroup#manager
-    relation direct_member: user | usergroup#member | usergroup#manager
-	
-	relation resource: resource 
-
-    permission member = direct_member + manager
-}
-
-definition organization {
-    relation group: usergroup
-    relation administrator: user | usergroup#member | usergroup#manager
-    relation direct_member: user
-
-    relation resource: resource
-
-    permission admin = administrator
-    permission member = direct_member + administrator + group->member
-}
-`
 const (
 	PORT = ":9192"
 )
@@ -53,7 +21,7 @@ func main() {
 		// NOTE: For SpiceDB behind TLS, use:
 		// grpcutil.WithBearerToken("somerandomkeyhere"),
 		// grpcutil.WithSystemCerts(grpcutil.VerifyCA),
-		grpcutil.WithInsecureBearerToken("somerandomkeyhere"),
+		grpcutil.WithInsecureBearerToken("somekey"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {

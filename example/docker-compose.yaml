@@ -1,0 +1,80 @@
+version: '3'
+
+services:
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    volumes:
+      - postgres-vol:/var/lib/postgresql/data/
+    command: postgres -c listen_addresses="*"
+
+  spicedb:
+    image: authzed/spicedb:latest
+    ports:
+      - "50051:50051"
+      - "8082:8080"
+    command: serve
+    environment:
+      - SPICEDB_GRPC_PRESHARED_KEY=somekey
+      - SPICEDB_DATASTORE_ENGINE=postgres
+      - SPICEDB_DATASTORE_CONN_URI=postgres://admin:password@db:5432/postgres?sslmode=disable
+    depends_on:
+      - spicedb-migrate
+      - db
+
+  spicedb-migrate:
+    image: authzed/spicedb:latest
+    command: migrate head
+    restart: on-failure
+    environment:
+      - SPICEDB_DATASTORE_ENGINE=postgres
+      - SPICEDB_DATASTORE_CONN_URI=postgres://admin:password@db:5432/postgres?sslmode=disable
+    depends_on:
+      - db
+
+  portal_authzed:
+    image: registry.cn-hongkong.aliyuncs.com/infiniteprimes/portal-authzed-svc:go-0.0.1
+    container_name: portal-authzed
+    ports:
+      - "9192:9192"
+    environment:
+      - HOST=spicedb:50051
+      - REDIS_ADDR=redis:6379
+      - BEARER_TOKEN=somekey
+    depends_on:
+      - redis
+      - spicedb
+
+  portal_authzed_r:
+    image: registry.cn-hongkong.aliyuncs.com/infiniteprimes/portal-authzed-svc:rs-0.0.1
+    container_name: portal-authzed_r
+    ports:
+      - "9193:9192"
+    environment:
+      - AUTHZED_SVC=http://spicedb:50051
+      - REDIS_ADDR_RS=redis://redis:6379/1
+      - SPICEDB_GRPC_PRESHARED_KEY=somekey
+      - RUST_BACKTRACE=1
+    depends_on:
+      - redis
+      - spicedb
+
+volumes:
+  postgres-vol: null
+  redis-vol: null

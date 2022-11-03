@@ -7,11 +7,47 @@ option go_package = "authzed-go/authze/pb";
 service AuthzedSVC {
 
   //添加权限
+  // object_type  : schema 中的资源类型
+  // object_id    : 资源ID
+  // subject_type : schema 中的主题类型
+  // subject_id   : 主题ID
+  // relation     : 需要设置的关系
+  // return       : 返回token (暂时不知道干啥用)
   rpc AddPerm(AddPermRequest)returns(AddPermResponse){};
-  //更新权限
+  //更新权限 （暂时不用）
   rpc UpdatePerm(updatePermRequest)returns(UpdatePermResponse){};
+
+  //读取权限
+  //resource_type :
+  rpc ReadPerm(ReadPermRequest)returns(ReadPermResponse){}
+
+  //检查权限
+  // object_type  : schema 中的资源类型
+  // object_id    : 资源ID
+  // subject_type : schema 中的主题类型
+  // subject_id   : 主题ID
+  // permission   : 权限
+  // return       : 返回检查结果
+  rpc CheckPerm(CheckPermRequest)returns(CheckPermResponse){}
   //删除权限
   rpc DelPerm(DelPermRequest)returns(DelPermResponse){};
+
+  //获取 具体 subject 拥有权限的  object 的id 列表
+  // object_type       :  schema 中的资源类型
+  // permission        :  权限
+  // subject_type      :  schema 中的主题类型
+  // subject_id        :  主题ID
+  // return            :  返回object 的id 列表
+  rpc LookupResources(LookupResourcesRequest)returns(LookupResourcesResponse){};
+
+  //获取拥有具体 object 的 subject 列表
+  // object_type       :  schema 中的资源类型
+  // object_id         :  资源ID
+  // permission        :  权限
+  // subject_type      :  schema 中的主题类型
+  // return            :  返回subject 的id 列表
+  rpc LookupSubjects(LookupSubjectsRequest)returns(LookupSubjectsResponse){};
+
   //读schema
   rpc ReadSchema(ReadSchemaRequest)returns(ReadSchemaResponse){};
   //写schema
@@ -19,18 +55,84 @@ service AuthzedSVC {
 
 
 }
-message AddPermRequest{}
+message AddPermRequest{
+  string object_type=1;
+  string object_id =2;
+  string subject_type=3;
+  string subject_id =4;
+  string relation=5;
+}
 message AddPermResponse{
-  string test=1;
+  string zed_token=1;
 }
 message updatePermRequest{}
 message UpdatePermResponse{}
+message ReadPermRequest{
+  string resource_type=1;
+}
+message ReadPermResponse{
+  repeated PermResponse perm_response=1;
+}
+
+message Relationship{
+  string object_type=1;
+  string object_id=2;
+  string relation=3;
+  string subject_type=4;
+  string subject_id=5;
+}
+message PermResponse{
+  string token = 1;
+  Relationship relationship =2;
+}
+message CheckPermRequest{
+  string object_type=1;
+  string object_id =2;
+  string subject_type=3;
+  string subject_id =4;
+  string  permission =5;
+}
+message CheckPermResponse{
+string checked=1;
+}
 message DelPermRequest{}
 message DelPermResponse{}
+
+
+message LookupResourcesRequest{
+  string object_type=1;
+  string permission =2;
+  string subject_type=3;
+  string subject_id=4;
+}
+message ResourcesResponse{
+  string token=1;
+  string object_id=2;
+}
+message LookupResourcesResponse{
+  repeated ResourcesResponse resources_response=1;
+}
+
+message LookupSubjectsRequest{
+  string object_type=1;
+  string object_id=2;
+  string permission =3;
+  string subject_type=4;
+}
+message LookupSubjectsResponse{
+  repeated SubjectsResponse subjects_response=1;
+}
+message SubjectsResponse{
+  string token=1;
+  string subjects_id=2;
+}
+
+
 message ReadSchemaRequest{}
 message ReadSchemaResponse{
   string schema=1;
 }
+
 message WriteSchemaRequest{
   string schema=1;
 }

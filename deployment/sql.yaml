@@ -35,10 +35,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: authzed-postgres
+  name: postgres-svc
   namespace: default
   labels:
-    name: authzed-postgres
+    name: postgres-svc
 spec:
   type: NodePort
   ports:

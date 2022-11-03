@@ -1,0 +1,20 @@
+ apiVersion: v1
+  kind: Pod
+  metadata:
+    name: pod-demo
+  spec:
+    volumes:             # 定义emptyDir类型的Volume
+      - name: myweb
+        emptyDir: {}
+    containers:
+      - name: myapp
+        image: ikubernetes/myapp:v1
+        volumeMounts:
+          - name: myweb
+            mountPath: /usr/share/nginx/html/
+      - name: busybox
+        image: busybox:latest
+        volumeMounts:             # 将名为myweb的volume挂载到容器里的/web目录下
+          - name: myweb
+            mountPath: /web
+        command: [ "/bin/sh", "-c", "while true; do echo $(date) >> /web/index.html; done" ]

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package authzed.v1;
+
+option go_package = "github.com/infiniteprimes/portal-authzed/auth/pb";
+
+service AuthzedSvc {
+  //GetSchema 读取schema,如果key为空，读取全部schema
+  rpc GetSchema(GetSchemaRequest)returns(GetSchemaResponse){};
+  //UpdateSchema 按照key部分更新schema
+  rpc UpdateSchema(UpdateSchemaRequest)returns(UpdateSchemaResponse){};
+  //DeleteSchema 按照key删除schema
+  rpc DeleteSchema(DeleteSchemaRequest)returns(DeleteSchemaResponse){}
+
+}
+
+message GetSchemaRequest{
+  string key = 1;
+}
+
+message GetSchemaResponse{
+  string schema = 1;
+}
+
+message UpdateSchemaRequest{
+  string key = 1;
+  string schema = 2;
+}
+
+message UpdateSchemaResponse{
+
+}
+
+message DeleteSchemaRequest{
+  string key = 1;
+}
+
+message DeleteSchemaResponse{}
