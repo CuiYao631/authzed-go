@@ -20,5 +20,4 @@ jobs:
 
       - name: test get
         if: ${{ failure() }}
-      - run: |
-            curl https://cs.console.aliyun.com/hook/trigger
+        run: code=curl https://cs.console.aliyun.com/hook/trigger
