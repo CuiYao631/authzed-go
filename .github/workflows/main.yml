@@ -20,3 +20,12 @@ jobs:
         run: curl  -i -s https://cs.console.aliyun.com/hook/trigger?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVzdGVySWQiOiJjOGU1MzFkYTgyNDZjNGVhN2E1Y2U1MGM2ODkzZmFmMGYiLCJpZCI6IjIxNDI4MSJ9.osogZm3Pv3Rzxhs9pd-OGtzZ9bIK-FJKXgeENnfZtQwuv9EZBu_d_lN E6nJmbgGvy-WXzYLIW9oK0vy_9D5c_gZ9uL2lxUTVJXfSw6XGNdt-D7l9meStn_-HG5YJK3eVSdUN2EFwuHbUHtPt-zjMtn-TW5wzXfpsFqCEETYgFj4 |grep HTTP|awk '{print $2}'
       - name: ckeck HTTP
         run: echo ${{ steps.http }}
+        
+      - id: checkout
+        uses: actions/checkout@v3
+      - name: Generate 0 or 1
+        id: generate_number
+        run:  echo "random_number=$(($RANDOM % 2))" >> $GITHUB_OUTPUT
+      - name: Pass or fail
+        run: |
+          if [[ ${{ steps.generate_number.outputs.random_number }} == 0 ]]; then exit 0; else exit 1; fi
