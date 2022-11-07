@@ -15,6 +15,6 @@ jobs:
       - name: HTTP
         id: http
         run: | 
-          url="https://cs.console.aliyun.com/hook/trigger?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVzdGVySWQiOiJjOGU1MzFkYTgyNDZjNGVhN2E1Y2U1MGM2ODkzZmFmMGYiLCJpZCI6IjIxNDI4MSJ9.osogZm3Pv3Rzxhs9pd-OGtzZ9bIK-FJKXgeENnfZtQwuv9EZBu_d_lNE6nJmbgGvy-WXzYLIW9oK0vy_9D5c_gZ9uL2lxUTVJXfSw6XGNdt-D7l9meStn_-HG5YJK3eVSdUN2EFwuHbUHtPt-zjMtn-TW5wzXfpsFqCEETYgFj4"
-          CODE=`curl  -i -s ${url} |grep HTTP|awk '{print $2}'`  >> $GITHUB_OUTPUT
+          url="https://cs.console.aliyun.com/hook/trigger?token=e4"
+          CODE=`curl  -i -s ${url} |grep HTTP|awk '{print $2}'`
           if [ $CODE == "200" ];then echo "SUCCESS"; else echo "FAILURE" exit 1; fi
