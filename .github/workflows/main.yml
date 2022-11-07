@@ -17,4 +17,5 @@ jobs:
         run: | 
           url="https://cs.console.aliyun.com/hook/trigger?token=e4"
           CODE=`curl  -i -s ${url} |grep HTTP|awk '{print $2}'`
+          echo ${CODE}
           if [ $CODE == "200" ];then echo "SUCCESS"; else echo "FAILURE" exit 1; fi
