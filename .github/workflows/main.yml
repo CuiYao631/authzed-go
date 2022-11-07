@@ -17,11 +17,12 @@ jobs:
           URL="https://cs.console.aliyun.com/hook/trigger?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVzdGVySWQiOiJjOGU1MzFkYTgyNDZjNGVhN2E1Y2U1MGM2ODkzZmFmMGYiLCJpZCI6IjIxNDI4MSJ9.osogZm3Pv3Rzxhs9pd-OGtzZ9bIK-FJKXgeENnfZtQwuv9EZBu_d_lNE6nJmbgGvy-WXzYLIW9oK0vy_9D5c_gZ9uL2lxUTVJXfSw6XGNdt-D7l9meStn_-HG5YJK3eVSdUN2EFwuHbUHtPt-zjMtn-TW5wzXfpsFqCEETYgFj4"
           RESULT=$(curl -s ${URL})
           echo ${RESULT}
-          CODE=${RESULT: 11: 3}
+          CODE=${RESULT: 13: 3}
           echo ${CODE}
           if [ $CODE != "200" ]
           then
           echo "FAILURE"
+          exit 1
           else
           echo "SUCCESS"
           fi
