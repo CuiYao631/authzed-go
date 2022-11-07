@@ -13,7 +13,7 @@ jobs:
     steps:
      
       - name: install yq
-        run: wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+        run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
       - name: HTTP
         run: | 
           URL="https://cs.console.aliyun.com/hook/trigger?token=eyJhbGciOiJSUzICI6IkpXVCJ9.eyJjbHVzdGVySWQiOiJjOGU1MzFkYTgyNDZjNGVhN2E1Y2U1MGM2ODkzZmFmMGYiLCJpZCI6IjIxNDI4MSJ9.osogZm3Pv3Rzxhs9pd-OGtzZ9bIK-FJKXgeENnfZtQwuv9EZBu_d_lNE6nJmbgGvy-WXzYLIW9oK0vy_9D5c_gZ9uL2lxUTVJXfSw6XGNdt-D7l9meStn_-HG5YJK3eVSdUN2EFwuHbUHtPt-zjMtn-TW5wzXfpsFqCEETYgFj4"
