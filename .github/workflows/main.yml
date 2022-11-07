@@ -11,27 +11,17 @@ jobs:
   FailJobIssueDemo:
     runs-on: ubuntu-latest
     steps:
-      - name: Check the deployed service URL
-        uses: jtalk/url-health-check-action@v2
-        with:
-          # Check the following URLs one by one sequentially
-          url: https://cs.console.aliyun.com/hook/trigger
-          # Follow redirects, or just report success on 3xx status codes
-          follow-redirect: false # Optional, defaults to "false"
-          # Fail this action after this many failed attempts
-          max-attempts: 3 # Optional, defaults to 1
-          # Delay between retries
-          retry-delay: 5s # Optional, only applicable to max-attempts > 1
-          # Retry all errors, including 404. This option might trigger curl upgrade.
-          retry-all: false # Optional, defaults to "false"
-        
-      - name: Step is going to pass
-        run: echo Passing step
-      
-
+     
       - name: HTTP
         id: http
-        run: code=`curl  -i -s "https://cs.console.aliyun.com/hook/trigger?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVzdGVySWQiOiJjOGU1MzFkYTgyNDZjNGVhN2E1Y2U1MGM2ODkzZmFmMGYiLCJpZCI6IjIxNDI4MSJ9.osogZm3Pv3Rzxhs9pd-OGtzZ9bIK-FJKXgeENnfZtQwuv9EZBu_d_lNE6nJmbgGvy-WXzYLIW9oK0vy_9D5c_gZ9uL2lxUTVJXfSw6XGNdt-D7l9meStn_-HG5YJK3eVSdUN2EFwuHbUHtPt-zjMtn-TW5wzXfpsFqCEETYgFj4" |grep HTTP|awk '{print $2}'`  >> $GITHUB_OUTPUT
+        run: | 
+          CODE=`curl  -i -s "https://cs.console.aliyun.com/hook/trigger?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVzdGVySWQiOiJjOGU1MzFkYTgyNDZjNGVhN2E1Y2U1MGM2ODkzZmFmMGYiLCJpZCI6IjIxNDI4MSJ9.osogZm3Pv3Rzxhs9pd-OGtzZ9bIK-FJKXgeENnfZtQwuv9EZBu_d_lNE6nJmbgGvy-WXzYLIW9oK0vy_9D5c_gZ9uL2lxUTVJXfSw6XGNdt-D7l9meStn_-HG5YJK3eVSdUN2EFwuHbUHtPt-zjMtn-TW5wzXfpsFqCEETYgFj4" |grep HTTP|awk '{print $2}'`  >> $GITHUB_OUTPUT
+          if [ $CODE != "200" ]
+          then
+          echo "FAILURE"
+          else
+          echo "SUCCESS"
+          fi
       - name: ckeck HTTP
         run: echo ${{ steps.http.outputs.code }}
         
